@@ -3,8 +3,9 @@ package main
 import (
 	"embed"
 
-	"dev.acevedo/backend/features"
 	"dev.acevedo/backend/log"
+	"dev.acevedo/backend/repositories"
+	"dev.acevedo/backend/services"
 
 	"dev.acevedo/backend/database"
 	"github.com/wailsapp/wails/v2"
@@ -26,8 +27,11 @@ func main() {
 		log.Error("Database connection failed with ", "err", err.Error())
 	}
 	defer dbPool.Close()
+
+	taskRepo := repositories.NewTaskRepo(dbPool)
+	TaskService := services.NewTaskService(log, taskRepo)
 	// Create an instance of the app structure
-	app := features.NewApp()
+	app := NewApp()
 
 	// Create application with options
 	err = wails.Run(&options.App{
@@ -41,6 +45,7 @@ func main() {
 		OnStartup:        app.Startup,
 		Bind: []interface{}{
 			app,
+			TaskService,
 		},
 	})
 

@@ -12,8 +12,12 @@ const (
 )
 
 type Task struct {
-	id     int
-	status Status
-	name   string
-	date   time.Time
+	Id     int       `json:"id"`
+	Status Status    `json:"status"`
+	Name   string    `json:"name"`
+	Date   time.Time `json:"date"`
+}
+
+type TaskInput struct {
+	Name string `json:"name"`
 }
