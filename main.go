@@ -25,6 +25,7 @@ func main() {
 	dbPool, err := database.OpenDb()
 	if err != nil {
 		log.Error("Database connection failed with ", "err", err.Error())
+		panic(err)
 	}
 	defer dbPool.Close()
 

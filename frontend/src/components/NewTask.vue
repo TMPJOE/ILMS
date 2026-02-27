@@ -1,8 +1,17 @@
 <script setup lang="ts">
-import { AddTask } from "../../wailsjs/go/main/App";
+import { AddTask } from "../../wailsjs/go/services/TaskService";
 import { ref } from "vue";
 
-const task = ref("");
+type Task = {
+	name: string;
+	desc: string;
+};
+
+var task = ref<Task>({
+	name: "",
+	desc: "",
+});
+
 function addTask() {
 	// Logic to add a new task goes here
 	AddTask(task.value).then(result => {
@@ -19,8 +28,15 @@ function addTask() {
 				<input
 					type="text"
 					class="form-control"
-					id="task"
-					v-model="task"
+					id="name"
+					v-model="task.name"
+					aria-describedby="taskHelp"
+				/>
+				<input
+					type="text"
+					class="form-control"
+					id="desc"
+					v-model="task.desc"
 					aria-describedby="taskHelp"
 				/>
 				<div id="taskHelp" class="form-text">Add a new task to your list.</div>

@@ -8,21 +8,16 @@ type TaskRepo struct {
 	db *sql.DB
 }
 
-func (t *TaskRepo) dbConstruct(dbConnection *sql.DB) {
-
-	t.db = dbConnection
-}
-
 func NewTaskRepo(dbConnection *sql.DB) *TaskRepo {
 	return &TaskRepo{
 		db: dbConnection,
 	}
 }
 
-func (t *TaskRepo) Create(taskName string) (sql.Result, error) {
-	query := "INSERT INTO task (status, taskName, date) VALUE (0,?, CURRENT_TIMESTAMP)"
+func (t *TaskRepo) Create(taskName, taskDesc string) (sql.Result, error) {
+	query := "INSERT INTO task (status, name, description, created_at) VALUES (0,?,?, CURRENT_TIMESTAMP)"
 
-	result, err := t.db.Exec(query, taskName)
+	result, err := t.db.Exec(query, taskName, taskDesc)
 	if err != nil {
 		return result, err
 	}

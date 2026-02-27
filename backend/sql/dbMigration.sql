@@ -1,4 +1,7 @@
 CREATE TABLE IF NOT EXISTS "task" (
 		id INTEGER PRIMARY KEY,
+		status INT NOT NULL,
+		name TEXT NOT NULL,
+		description TEXT,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
