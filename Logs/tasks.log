@@ -1,0 +1,10 @@
+{"time":"2026-02-28T21:54:09.3852731-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-02-28T22:04:08.3496045-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-02-28T22:08:34.16052-05:00","level":"INFO","msg":"Unsolicited response received on idle HTTP channel starting with \"HTTP/1.1 400 Bad Request\\r\\n\\r\\n\"; err=<nil>"}
+{"time":"2026-02-28T22:16:40.4976637-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-02-28T22:17:00.5483841-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-02-28T22:22:38.4226348-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-02-28T22:23:46.2636232-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-02-28T22:24:01.7877652-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-02-28T22:24:20.5256391-05:00","level":"INFO","source":{"function":"dev.acevedo/backend/services.(*TaskService).AddTask","file":"C:/Users/josed/Documents/Projects/ILMS_Project/ILMS/backend/services/task.go","line":31},"msg":"Task Added","Name":"ola","id":4}
+{"time":"2026-02-28T22:25:21.7195084-05:00","level":"INFO","source":{"function":"dev.acevedo/backend/services.(*TaskService).AddTask","file":"C:/Users/josed/Documents/Projects/ILMS_Project/ILMS/backend/services/task.go","line":31},"msg":"Task Added","Name":"gayyy","id":5}

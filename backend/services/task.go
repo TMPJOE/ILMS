@@ -36,3 +36,22 @@ func (s *TaskService) AddTask(input models.TaskInput) error {
 
 	return nil
 }
+
+func (s *TaskService) GetTasks() ([]models.TaskOutput, error) {
+
+	tasks, err := s.r.SelectAll()
+	if err != nil {
+		s.l.Error("Something broke", "err", err)
+		return nil, err
+	}
+
+	//allocate memory for task output slice
+	tasksOut := make([]models.TaskOutput, 0, len(tasks))
+
+	//iterate through slice of pointers to assign its value to the slice of task output
+	for _, task := range tasks {
+		tasksOut = append(tasksOut, *task)
+	}
+
+	return tasksOut, nil
+}

@@ -45,9 +45,11 @@ function addTask() {
 		</form>
 	</div>
 </template>
+
 <style lang="css" scoped>
 .button {
 	margin-top: 10px;
+	background-color: beige;
 }
 
 .input {

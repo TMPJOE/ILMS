@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"os"
 
 	"dev.acevedo/backend/log"
 	"dev.acevedo/backend/repositories"
@@ -18,14 +19,25 @@ var assets embed.FS
 
 func main() {
 
+	err := os.MkdirAll("Logs", 0755)
+	if err != nil {
+		panic(err)
+	}
+
+	LOG_FILE, err := os.OpenFile("Logs/tasks.log", os.O_CREATE|os.O_APPEND|os.O_RDONLY, 0666)
+	if err != nil {
+		panic(err)
+	}
+
+	defer LOG_FILE.Close()
+
 	//logger init
-	log := log.New()
+	log := log.New(LOG_FILE)
 
 	//database connection
 	dbPool, err := database.OpenDb()
 	if err != nil {
 		log.Error("Database connection failed with ", "err", err.Error())
-		panic(err)
 	}
 	defer dbPool.Close()
 
@@ -51,6 +63,7 @@ func main() {
 	})
 
 	if err != nil {
-		log.Error(err.Error())
+		log.Error("Error creating app", "err", err.Error())
+		panic(err)
 	}
 }

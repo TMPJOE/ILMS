@@ -5,3 +5,7 @@
 export function AddTask(arg1) {
   return window['go']['services']['TaskService']['AddTask'](arg1);
 }
+
+export function GetTasks() {
+  return window['go']['services']['TaskService']['GetTasks']();
+}

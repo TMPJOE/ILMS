@@ -3,3 +3,5 @@
 import {models} from '../models';
 
 export function AddTask(arg1:models.TaskInput):Promise<void>;
+
+export function GetTasks():Promise<Array<models.TaskOutput>>;

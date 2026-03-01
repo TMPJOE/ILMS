@@ -2,6 +2,8 @@ package repositories
 
 import (
 	"database/sql"
+
+	"dev.acevedo/backend/models"
 )
 
 type TaskRepo struct {
@@ -23,4 +25,41 @@ func (t *TaskRepo) Create(taskName, taskDesc string) (sql.Result, error) {
 	}
 
 	return result, nil
+}
+
+func (t *TaskRepo) SelectAll() ([]*models.TaskOutput, error) {
+	query := "SELECT * FROM task"
+
+	rows, err := t.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var tasks []*models.TaskOutput
+
+	for rows.Next() {
+		t := &models.TaskOutput{}
+
+		err = rows.Scan(
+			&t.Id,
+			&t.Status,
+			&t.Name,
+			&t.Desc,
+			&t.Date,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		tasks = append(tasks, t)
+	}
+
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
+
+	return tasks, nil
+
 }
