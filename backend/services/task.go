@@ -55,3 +55,28 @@ func (s *TaskService) GetTasks() ([]models.TaskOutput, error) {
 
 	return tasksOut, nil
 }
+
+func (s *TaskService) UpdateTask(update models.TaskUpdate) error {
+	result, err := s.r.Update(update)
+	id, _ := result.RowsAffected()
+	if err != nil {
+		s.l.Error("Update error caused by", "err", err, slog.Int64("Rows affected", id))
+		return err
+	}
+
+	s.l.Info("Task updated", slog.Int64("Rows affected", id))
+
+	return err
+}
+
+func (s *TaskService) DeleteTask(id int) error {
+	result, err := s.r.Delete(id)
+	rows, _ := result.RowsAffected()
+	if err != nil {
+		s.l.Error("Delete error caused by", "err", err, slog.Int64("Rows affected", rows))
+		return err
+	}
+
+	s.l.Info("Task deleted successfully", slog.Int64("Rows affected", rows))
+	return nil
+}

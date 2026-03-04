@@ -63,3 +63,30 @@ func (t *TaskRepo) SelectAll() ([]*models.TaskOutput, error) {
 	return tasks, nil
 
 }
+
+func (t *TaskRepo) Update(task models.TaskUpdate) (sql.Result, error) {
+	query := `
+	UPDATE task 
+	SET name = ?, 
+		status = ?, 
+		description = ? 
+	WHERE id = ?;`
+
+	result, err := t.db.Exec(query, task.Name, task.Status, task.Desc, task.Id)
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
+}
+
+func (t *TaskRepo) Delete(id int) (sql.Result, error) {
+	query := "DELETE from task WHERE id = ?"
+
+	result, err := t.db.Exec(query, id)
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
+}

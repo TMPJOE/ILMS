@@ -8,3 +8,18 @@
 {"time":"2026-02-28T22:24:01.7877652-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
 {"time":"2026-02-28T22:24:20.5256391-05:00","level":"INFO","source":{"function":"dev.acevedo/backend/services.(*TaskService).AddTask","file":"C:/Users/josed/Documents/Projects/ILMS_Project/ILMS/backend/services/task.go","line":31},"msg":"Task Added","Name":"ola","id":4}
 {"time":"2026-02-28T22:25:21.7195084-05:00","level":"INFO","source":{"function":"dev.acevedo/backend/services.(*TaskService).AddTask","file":"C:/Users/josed/Documents/Projects/ILMS_Project/ILMS/backend/services/task.go","line":31},"msg":"Task Added","Name":"gayyy","id":5}
+{"time":"2026-03-01T07:59:16.6657694-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-03-01T08:15:24.7616109-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-03-01T11:22:52.0334776-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-03-01T11:29:34.9485328-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-03-01T11:59:42.9395447-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-03-01T12:06:35.9532981-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-03-01T12:12:18.6833864-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-03-01T12:12:22.0651095-05:00","level":"INFO","source":{"function":"dev.acevedo/backend/services.(*TaskService).UpdateTask","file":"C:/Users/josed/Documents/Projects/ILMS_Project/ILMS/backend/services/task.go","line":67},"msg":"Task updated","Rows affected":1}
+{"time":"2026-03-01T12:12:34.2976974-05:00","level":"INFO","source":{"function":"dev.acevedo/backend/services.(*TaskService).UpdateTask","file":"C:/Users/josed/Documents/Projects/ILMS_Project/ILMS/backend/services/task.go","line":67},"msg":"Task updated","Rows affected":1}
+{"time":"2026-03-01T12:12:37.3014631-05:00","level":"INFO","source":{"function":"dev.acevedo/backend/services.(*TaskService).UpdateTask","file":"C:/Users/josed/Documents/Projects/ILMS_Project/ILMS/backend/services/task.go","line":67},"msg":"Task updated","Rows affected":1}
+{"time":"2026-03-01T12:13:17.4680321-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-03-02T18:55:57.499884-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-03-02T18:57:22.618286-05:00","level":"INFO","msg":"Unsolicited response received on idle HTTP channel starting with \"HTTP/1.1 400 Bad Request\\r\\n\\r\\n\"; err=<nil>"}
+{"time":"2026-03-04T09:57:17.8513155-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-03-04T10:03:06.1528536-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}

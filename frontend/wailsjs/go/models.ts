@@ -34,6 +34,24 @@ export namespace models {
 	        this.date = source["date"];
 	    }
 	}
+	export class TaskUpdate {
+	    id: number;
+	    status: number;
+	    name: string;
+	    desc: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new TaskUpdate(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.status = source["status"];
+	        this.name = source["name"];
+	        this.desc = source["desc"];
+	    }
+	}
 
 }
 

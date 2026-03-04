@@ -6,6 +6,14 @@ export function AddTask(arg1) {
   return window['go']['services']['TaskService']['AddTask'](arg1);
 }
 
+export function DeleteTask(arg1) {
+  return window['go']['services']['TaskService']['DeleteTask'](arg1);
+}
+
 export function GetTasks() {
   return window['go']['services']['TaskService']['GetTasks']();
+}
+
+export function UpdateTask(arg1) {
+  return window['go']['services']['TaskService']['UpdateTask'](arg1);
 }
