@@ -23,3 +23,4 @@
 {"time":"2026-03-02T18:57:22.618286-05:00","level":"INFO","msg":"Unsolicited response received on idle HTTP channel starting with \"HTTP/1.1 400 Bad Request\\r\\n\\r\\n\"; err=<nil>"}
 {"time":"2026-03-04T09:57:17.8513155-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
 {"time":"2026-03-04T10:03:06.1528536-05:00","level":"INFO","msg":"[WebView2] Environment created successfully"}
+{"time":"2026-03-04T10:31:15.4985455-05:00","level":"INFO","source":{"function":"dev.acevedo/backend/services.(*TaskService).UpdateTask","file":"C:/Users/josed/Documents/Projects/ILMS_Project/ILMS/backend/services/task.go","line":67},"msg":"Task updated","Rows affected":1}

@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { GetTasks } from "../../wailsjs/go/services/TaskService";
 import { ref } from "vue";
-import { onMounted } from "vue";
 import { UpdateTask } from "../../wailsjs/go/services/TaskService";
 import { onClickOutside } from "@vueuse/core";
 
@@ -61,14 +59,14 @@ const menuRef = ref<HTMLDivElement | null>(null);
 onClickOutside(
 	() => menuRef.value,
 	() => {
-		openIndex.value = null;
+		openIndex.value = false;
 	},
 );
 
-const openIndex = ref<number | null>(null);
+const openIndex = ref<boolean>(false);
 
-function toggleMenu(idx: number) {
-	openIndex.value = openIndex.value === idx ? null : idx;
+function toggleMenu() {
+	openIndex.value = !openIndex.value;
 }
 
 function handleAction(task: number, action: string) {
@@ -79,7 +77,7 @@ function handleAction(task: number, action: string) {
 
 <template>
 	<div class="task">
-		<div>
+		<div class="task-info">
 			<h3>{{ task.name }}</h3>
 			<p>{{ task.desc }}</p>
 			<p>{{ task.date }}</p>
@@ -96,14 +94,16 @@ function handleAction(task: number, action: string) {
 				</option>
 			</select>
 		</div>
+
 		<div class="dotmenu" ref="menuRef">
-			<button class="dotmenu-trigger" @click.stop="toggleMenu(task.id)">
+			<button class="dotmenu-trigger" @click.stop="toggleMenu()">
 				<span class="dot"></span>
 				<span class="dot"></span>
 				<span class="dot"></span>
 			</button>
+
 			<Transition name="menu-pop">
-				<div v-if="openIndex === task.id" class="dotmenu-panel">
+				<div v-if="openIndex" class="dotmenu-panel">
 					<button
 						v-for="action in TaskOptions"
 						:key="action.label"
@@ -121,15 +121,20 @@ function handleAction(task: number, action: string) {
 
 <style lang="css" scoped>
 .task {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
 	padding: 1rem;
 	margin: 10px;
 	border: 2px solid #008e7f;
+	position: relative;
 	border-radius: 7px;
 	text-align: left;
 }
 /* --- 3-dot trigger --- */
 .dotmenu {
 	position: relative;
+	margin-left: auto;
 }
 
 .dotmenu-trigger {
