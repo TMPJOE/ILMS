@@ -56,17 +56,18 @@ func (s *TaskService) GetTasks() ([]models.TaskOutput, error) {
 	return tasksOut, nil
 }
 
-func (s *TaskService) UpdateTask(update models.TaskUpdate) error {
-	result, err := s.r.Update(update)
-	id, _ := result.RowsAffected()
+func (s *TaskService) UpdateTask(update models.TaskUpdate) (models.TaskSwapBack, error) {
+	task, err := s.r.Update(update)
 	if err != nil {
-		s.l.Error("Update error caused by", "err", err, slog.Int64("Rows affected", id))
-		return err
+		s.l.Error("Update error caused by", "err", err)
+		return models.TaskSwapBack{}, err
 	}
 
-	s.l.Info("Task updated", slog.Int64("Rows affected", id))
+	s.l.Info("Task updated")
 
-	return err
+	taskOut := *task
+
+	return taskOut, err
 }
 
 func (s *TaskService) DeleteTask(id int) error {

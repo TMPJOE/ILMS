@@ -29,3 +29,8 @@ type TaskUpdate struct {
 	Name   string `json:"name"`
 	Desc   string `json:"desc"`
 }
+
+type TaskSwapBack struct {
+	Name string `json:"name"`
+	Desc string `json:"desc"`
+}

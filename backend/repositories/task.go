@@ -64,7 +64,7 @@ func (t *TaskRepo) SelectAll() ([]*models.TaskOutput, error) {
 
 }
 
-func (t *TaskRepo) Update(task models.TaskUpdate) (sql.Result, error) {
+func (t *TaskRepo) Update(task models.TaskUpdate) (*models.TaskSwapBack, error) {
 	query := `
 	UPDATE task 
 	SET name = ?, 
@@ -72,12 +72,19 @@ func (t *TaskRepo) Update(task models.TaskUpdate) (sql.Result, error) {
 		description = ? 
 	WHERE id = ?;`
 
-	result, err := t.db.Exec(query, task.Name, task.Status, task.Desc, task.Id)
+	_, err := t.db.Exec(query, task.Name, task.Status, task.Desc, task.Id)
 	if err != nil {
-		return result, err
+		return &models.TaskSwapBack{}, err
 	}
 
-	return result, nil
+	query = "SELECT name, description FROM task WHERE id = ?"
+	row := t.db.QueryRow(query, task.Id)
+	taskBack := &models.TaskSwapBack{}
+	if err = row.Scan(&taskBack.Name, &taskBack.Desc); err != nil {
+		return &models.TaskSwapBack{}, err
+	}
+
+	return taskBack, nil
 }
 
 func (t *TaskRepo) Delete(id int) (sql.Result, error) {

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { UpdateTask } from "../../wailsjs/go/services/TaskService";
+import { DeleteTask } from "../../wailsjs/go/services/TaskService";
 import { onClickOutside } from "@vueuse/core";
 
 const props = defineProps<{
@@ -39,6 +40,8 @@ var TaskStatus: Record<number, string> = {
 	3: "Done",
 };
 
+var isVisible = ref<boolean>(true);
+
 function updateTaskStatus(
 	taskId: number,
 	newStatus: number,
@@ -69,14 +72,39 @@ function toggleMenu() {
 	openIndex.value = !openIndex.value;
 }
 
+const getStatusColor = (status: number) => {
+	const colors: Record<number, string> = {
+		0: "#008e7f",
+		1: "coral",
+		2: "red",
+		3: "lightgreen",
+	};
+	return colors[status] || "#008e7f";
+};
+
+const emit = defineEmits<{
+	openform: [taskSeleceted: TaskUpdate];
+}>();
+
 function handleAction(task: number, action: string) {
-	// → wire your backend call here
-	console.log(`[${task}] → ${action}`);
+	//edit
+	if (action === "Edit") {
+		emit("openform", props.task);
+	}
+	//delete
+	if (action === "Delete") {
+		DeleteTask(task);
+		isVisible.value = false;
+	}
 }
 </script>
 
 <template>
-	<div class="task">
+	<div
+		class="task"
+		v-if="isVisible"
+		:style="{ borderColor: getStatusColor(task.status) }"
+	>
 		<div class="task-info">
 			<h3>{{ task.name }}</h3>
 			<p>{{ task.desc }}</p>

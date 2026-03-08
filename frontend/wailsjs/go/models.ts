@@ -34,6 +34,20 @@ export namespace models {
 	        this.date = source["date"];
 	    }
 	}
+	export class TaskSwapBack {
+	    name: string;
+	    desc: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new TaskSwapBack(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.desc = source["desc"];
+	    }
+	}
 	export class TaskUpdate {
 	    id: number;
 	    status: number;

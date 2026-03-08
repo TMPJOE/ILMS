@@ -3,6 +3,7 @@ import { GetTasks } from "../../wailsjs/go/services/TaskService";
 import { ref } from "vue";
 import { onMounted } from "vue";
 import Task from "./Task.vue";
+import Form from "./TaskForm.vue";
 
 interface Task {
 	id: number;
@@ -12,12 +13,39 @@ interface Task {
 	date: string;
 }
 
+interface TaskUpdate {
+	name: string;
+	desc: string;
+}
+
 var tasks = ref([] as Task[]);
 
 function fetchTasks() {
 	GetTasks().then(result => {
 		tasks.value = result;
 	});
+}
+
+const selectedTask = ref<TaskUpdate | undefined>(undefined);
+const openForm = ref<boolean>(false);
+function openFormFunc(taskToEdit?: TaskUpdate) {
+	selectedTask.value = taskToEdit;
+	openForm.value = true;
+}
+function taskadded() {
+	openForm.value = false;
+	console.log("Form closed");
+}
+
+function taskupdated(updatedTask: TaskUpdate) {
+	// Update the task in the tasks array
+	const index = tasks.value.findIndex(
+		task => task.id === selectedTask.value?.id,
+	);
+	if (index !== -1) {
+		tasks.value[index].name = updatedTask.name;
+		tasks.value[index].desc = updatedTask.desc;
+	}
 }
 
 onMounted(() => {
@@ -33,7 +61,16 @@ onMounted(() => {
 			<div v-if="tasks.length === 0">No tasks available.</div>
 
 			<div v-for="task in tasks" :key="task.id" class="task">
-				<Task :task="task" />
+				<Task :task="task" @openform="openFormFunc" />
+			</div>
+
+			<div v-if="openForm" class="modal-backdrop">
+				<Form
+					:task="selectedTask"
+					class="form"
+					@taskadded="taskadded"
+					@taskupdated="taskupdated"
+				/>
 			</div>
 		</div>
 	</div>
@@ -54,5 +91,36 @@ onMounted(() => {
 }
 .list-of-tasks__content {
 	padding: 1rem;
+}
+
+.modal-backdrop {
+	/* 1. Cover the entire screen */
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+
+	/* 2. Create the blur effect */
+	background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+	backdrop-filter: blur(8px); /* The magic blur line */
+
+	/* 3. Center the Form */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	/* 4. Ensure it's on top of everything else */
+	z-index: 999;
+}
+
+.form {
+	background: rgba(27, 38, 54, 1);
+	padding: 2rem;
+	border-radius: 12px;
+	border: 1px solid #008e7f;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+	width: 90%;
+	max-width: 500px;
 }
 </style>

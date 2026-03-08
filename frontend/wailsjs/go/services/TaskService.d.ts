@@ -8,4 +8,4 @@ export function DeleteTask(arg1:number):Promise<void>;
 
 export function GetTasks():Promise<Array<models.TaskOutput>>;
 
-export function UpdateTask(arg1:models.TaskUpdate):Promise<void>;
+export function UpdateTask(arg1:models.TaskUpdate):Promise<models.TaskSwapBack>;
