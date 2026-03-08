@@ -14,6 +14,8 @@ interface Task {
 }
 
 interface TaskUpdate {
+	id: number;
+	status: number;
 	name: string;
 	desc: string;
 }
@@ -32,16 +34,26 @@ function openFormFunc(taskToEdit?: TaskUpdate) {
 	selectedTask.value = taskToEdit;
 	openForm.value = true;
 }
-function taskadded() {
+function openFormAdd() {
+	openForm.value = !openForm.value;
+}
+
+function closeForm() {
 	openForm.value = false;
-	console.log("Form closed");
+	selectedTask.value = undefined;
+}
+
+function taskadded(taskAdded: Task) {
+	//add tsak to the array
+	tasks.value = [...tasks.value, taskAdded];
 }
 
 function taskupdated(updatedTask: TaskUpdate) {
 	// Update the task in the tasks array
-	const index = tasks.value.findIndex(
-		task => task.id === selectedTask.value?.id,
-	);
+	var index = -1;
+	if (updatedTask !== undefined) {
+		index = tasks.value.findIndex(task => task.id === updatedTask.id);
+	}
 	if (index !== -1) {
 		tasks.value[index].name = updatedTask.name;
 		tasks.value[index].desc = updatedTask.desc;
@@ -53,6 +65,7 @@ onMounted(() => {
 });
 </script>
 <template>
+	<button @click="openFormAdd()">Add New Task</button>
 	<div class="list-of-tasks">
 		<div class="list-of-tasks__header">
 			<h2>List of Tasks</h2>
@@ -67,9 +80,10 @@ onMounted(() => {
 			<div v-if="openForm" class="modal-backdrop">
 				<Form
 					:task="selectedTask"
+					@task-added="taskadded"
+					@task-updated="taskupdated"
+					@task-action="closeForm"
 					class="form"
-					@taskadded="taskadded"
-					@taskupdated="taskupdated"
 				/>
 			</div>
 		</div>

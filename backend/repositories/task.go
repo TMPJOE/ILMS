@@ -16,15 +16,33 @@ func NewTaskRepo(dbConnection *sql.DB) *TaskRepo {
 	}
 }
 
-func (t *TaskRepo) Create(taskName, taskDesc string) (sql.Result, error) {
+func (t *TaskRepo) Create(taskName, taskDesc string) (*models.TaskOutput, error) {
 	query := "INSERT INTO task (status, name, description, created_at) VALUES (0,?,?, CURRENT_TIMESTAMP)"
 
 	result, err := t.db.Exec(query, taskName, taskDesc)
 	if err != nil {
-		return result, err
+		return nil, err
 	}
 
-	return result, nil
+	id, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+	query = "SELECT * FROM task WHERE id = ?"
+	row := t.db.QueryRow(query, id)
+	task := &models.TaskOutput{}
+
+	if err = row.Scan(
+		&task.Id,
+		&task.Status,
+		&task.Name,
+		&task.Desc,
+		&task.Date,
+	); err != nil {
+		return nil, err
+	}
+
+	return task, nil
 }
 
 func (t *TaskRepo) SelectAll() ([]*models.TaskOutput, error) {
@@ -74,14 +92,14 @@ func (t *TaskRepo) Update(task models.TaskUpdate) (*models.TaskSwapBack, error) 
 
 	_, err := t.db.Exec(query, task.Name, task.Status, task.Desc, task.Id)
 	if err != nil {
-		return &models.TaskSwapBack{}, err
+		return nil, err
 	}
 
 	query = "SELECT name, description FROM task WHERE id = ?"
 	row := t.db.QueryRow(query, task.Id)
 	taskBack := &models.TaskSwapBack{}
 	if err = row.Scan(&taskBack.Name, &taskBack.Desc); err != nil {
-		return &models.TaskSwapBack{}, err
+		return nil, err
 	}
 
 	return taskBack, nil

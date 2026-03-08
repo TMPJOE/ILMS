@@ -13,8 +13,19 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	taskadded: [];
-	taskupdated: [taskUpdated: Task];
+	"task-updated": [
+		taskUpdated: { id: number; status: number; name: string; desc: string },
+	];
+	"task-added": [
+		taskAdded: {
+			id: number;
+			status: number;
+			name: string;
+			desc: string;
+			date: string;
+		},
+	];
+	"task-action": [];
 }>();
 
 type Task = {
@@ -27,11 +38,20 @@ var task = ref<Task>({
 	desc: "",
 });
 
-function addTask() {
-	// Logic to add a new task goes here
-	AddTask(task.value).then(result => {
-		console.log(result);
-	});
+function closeForm() {
+	emit("task-action");
+}
+
+async function addTask() {
+	try {
+		const result = await AddTask({
+			name: task.value.name,
+			desc: task.value.desc,
+		});
+		emit("task-added", result);
+	} catch (error) {
+		console.error("Error adding task:", error);
+	}
 }
 
 function updateTaskStatus() {
@@ -42,12 +62,13 @@ function updateTaskStatus() {
 		status: props.task?.status || 0,
 	})
 		.then(result => {
-			console.log(result);
-			emit("taskupdated", {
+			emit("task-updated", {
+				id: props.task?.id || 0,
+				status: props.task?.status || 0,
 				name: result.name,
 				desc: task.value.desc,
 			});
-			emit("taskadded");
+			emit("task-action");
 		})
 		.catch(error => {
 			console.error("Error updating task:", error);
@@ -55,7 +76,7 @@ function updateTaskStatus() {
 }
 const isEditing = ref(false);
 function toggleEdit() {
-	if (props.task?.id === 0) {
+	if (props.task === undefined || props.task.id === 0) {
 		isEditing.value = false;
 		return;
 	}
@@ -92,13 +113,18 @@ onMounted(() => {
 			/>
 		</div>
 		<div id="taskHelp" class="form-text">Add a new task to your list.</div>
-		<button
-			class="form-button"
-			type="submit"
-			@click.prevent="() => (isEditing ? updateTaskStatus() : addTask())"
-		>
-			{{ isEditing ? "Edit" : "Add" }}
-		</button>
+		<div class="form-group-button">
+			<button
+				class="form-button"
+				type="submit"
+				@click.prevent="() => (isEditing ? updateTaskStatus() : addTask())"
+			>
+				{{ isEditing ? "Edit" : "Add" }}
+			</button>
+			<button class="form-button" type="button" @click="$emit('task-action')">
+				Cancel
+			</button>
+		</div>
 	</form>
 </template>
 
@@ -146,5 +172,12 @@ onMounted(() => {
 .form-button:hover {
 	background-color: white;
 	color: #008e7f;
+}
+
+.form-group-button {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 1rem;
 }
 </style>
