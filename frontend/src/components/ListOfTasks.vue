@@ -3,7 +3,7 @@ import { GetTasks } from "../../wailsjs/go/services/TaskService";
 import { ref } from "vue";
 import { onMounted } from "vue";
 import Task from "./Task.vue";
-import Form from "./TaskForm.vue";
+import Form from "./validatedForm.vue";
 
 interface Task {
 	id: number;
@@ -58,6 +58,7 @@ function taskupdated(updatedTask: TaskUpdate) {
 		tasks.value[index].name = updatedTask.name;
 		tasks.value[index].desc = updatedTask.desc;
 	}
+	console.log("emit called");
 }
 
 onMounted(() => {

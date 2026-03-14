@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import { Field, Form, ErrorMessage } from "vee-validate";
 import { AddTask } from "../../wailsjs/go/services/TaskService";
 import { UpdateTask } from "../../wailsjs/go/services/TaskService";
-import { onMounted, ref } from "vue";
-
+import { computed } from "vue";
+import { object, string } from "yup";
 const props = defineProps<{
 	task?: {
 		id: number;
@@ -28,100 +29,79 @@ const emit = defineEmits<{
 	"task-action": [];
 }>();
 
-type Task = {
-	name: string;
-	desc: string;
-};
-
-var task = ref<Task>({
-	name: "",
-	desc: "",
+const schema = object({
+	name: string()
+		.required("Task name is required")
+		.min(4, "Task name must be at least 4 characters")
+		.max(50, "Task name must be at most 50 characters"),
+	desc: string()
+		.required("Description is required")
+		.min(4, "Task description must be at least 4 characters")
+		.max(200, "Description must be at most 200 characters"),
 });
 
-async function addTask() {
-	try {
-		const result = await AddTask({
-			name: task.value.name,
-			desc: task.value.desc,
-		});
-		emit("task-added", result);
-	} catch (error) {
-		console.error("Error adding task:", error);
-	}
-}
+async function onSubmit(values: any) {
+	if (isEditing.value) {
+		try {
+			const result = await UpdateTask({
+				...values,
+				id: props.task?.id || 0,
+				status: props.task?.status || 0,
+			});
 
-function updateTaskStatus() {
-	UpdateTask({
-		id: props.task?.id || 0,
-		name: task.value.name,
-		desc: task.value.desc,
-		status: props.task?.status || 0,
-	})
-		.then(result => {
 			emit("task-updated", {
 				id: props.task?.id || 0,
 				status: props.task?.status || 0,
 				name: result.name,
 				desc: result.desc,
 			});
-			emit("task-action");
-		})
-		.catch(error => {
+		} catch (error) {
 			console.error("Error updating task:", error);
-		});
-}
-const isEditing = ref(false);
-function toggleEdit() {
-	if (props.task === undefined || props.task.id === 0) {
-		isEditing.value = false;
-		return;
+		}
+	} else {
+		try {
+			const result = await AddTask({
+				...values,
+			});
+			emit("task-added", result);
+		} catch (error) {
+			console.error("Error adding task:", error);
+		}
 	}
-	task.value.name = props.task?.name || "";
-	task.value.desc = props.task?.desc || "";
-	isEditing.value = true;
+	emit("task-action");
 }
 
-onMounted(() => {
-	toggleEdit();
-});
+const isEditing = computed(() => !!(props.task && props.task.id !== 0));
 </script>
 
 <template>
-	<form class="form">
+	<Form
+		@submit="onSubmit"
+		:validation-schema="schema"
+		:initial-values="props.task"
+		v-slot="values"
+	>
+		<pre>Live Form State: {{ values }}</pre>
+		>
 		<div class="form-element">
 			<label for="name" class="form-label">Task</label>
-			<input
-				type="text"
-				class="form-input"
-				id="name"
-				v-model="task.name"
-				aria-describedby="taskHelp"
-			/>
+			<Field type="text" class="form-input" id="name" name="name" />
+			<ErrorMessage name="name" class="error-message" />
 		</div>
 		<div class="form-element">
 			<label for="desc" class="form-label">Description</label>
-			<input
-				type="text"
-				class="form-input"
-				id="desc"
-				v-model="task.desc"
-				aria-describedby="taskHelp"
-			/>
+			<Field type="text" class="form-input" id="desc" name="desc" />
+			<ErrorMessage name="desc" class="error-message" as="p" />
 		</div>
-		<div id="taskHelp" class="form-text">Add a new task to your list.</div>
 		<div class="form-group-button">
-			<button
-				class="form-button"
-				type="submit"
-				@click="() => (isEditing ? updateTaskStatus() : addTask())"
-			>
+			<button class="form-button" type="submit">
 				{{ isEditing ? "Edit" : "Add" }}
 			</button>
 			<button class="form-button" type="button" @click="$emit('task-action')">
 				Cancel
 			</button>
 		</div>
-	</form>
+	</Form>
 </template>
 
 <style lang="css" scoped>
@@ -175,5 +155,13 @@ onMounted(() => {
 	flex-direction: row;
 	align-items: center;
 	gap: 1rem;
+}
+
+.error-message {
+	border: 1px solid coral;
+	color: red;
+	font-size: 0.875rem;
+	margin-top: 0.25rem;
+	display: block;
 }
 </style>
