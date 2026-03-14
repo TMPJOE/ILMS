@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Field, Form, ErrorMessage } from "vee-validate";
+import { Field, Form, useFieldArray } from "vee-validate";
 import { AddTask } from "../../wailsjs/go/services/TaskService";
 import { UpdateTask } from "../../wailsjs/go/services/TaskService";
 import { computed } from "vue";
@@ -79,19 +79,17 @@ const isEditing = computed(() => !!(props.task && props.task.id !== 0));
 		@submit="onSubmit"
 		:validation-schema="schema"
 		:initial-values="props.task"
-		v-slot="values"
+		v-slot="{ errors }"
 	>
-		<pre>Live Form State: {{ values }}</pre>
-		>
 		<div class="form-element">
 			<label for="name" class="form-label">Task</label>
 			<Field type="text" class="form-input" id="name" name="name" />
-			<ErrorMessage name="name" class="error-message" />
+			<p v-if="errors.name" class="error-message">{{ errors.name }}</p>
 		</div>
 		<div class="form-element">
 			<label for="desc" class="form-label">Description</label>
 			<Field type="text" class="form-input" id="desc" name="desc" />
-			<ErrorMessage name="desc" class="error-message" as="p" />
+			<p v-if="errors.desc" class="error-message">{{ errors.desc }}</p>
 		</div>
 		<div class="form-group-button">
 			<button class="form-button" type="submit">
@@ -158,10 +156,12 @@ const isEditing = computed(() => !!(props.task && props.task.id !== 0));
 }
 
 .error-message {
-	border: 1px solid coral;
-	color: red;
-	font-size: 0.875rem;
-	margin-top: 0.25rem;
 	display: block;
+	padding: 0.5rem;
+	border: 2px solid rgb(255, 127, 80);
+	border-radius: 5px;
+	background-color: rgba(255, 127, 80, 0.301);
+	margin: 2px;
+	color: coral;
 }
 </style>

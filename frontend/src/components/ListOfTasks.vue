@@ -3,7 +3,7 @@ import { GetTasks } from "../../wailsjs/go/services/TaskService";
 import { ref } from "vue";
 import { onMounted } from "vue";
 import Task from "./Task.vue";
-import Form from "./validatedForm.vue";
+import ValidatedForm from "./validatedForm.vue";
 
 interface Task {
 	id: number;
@@ -79,7 +79,7 @@ onMounted(() => {
 			</div>
 
 			<div v-if="openForm" class="modal-backdrop">
-				<Form
+				<ValidatedForm
 					:task="selectedTask"
 					@task-added="taskadded"
 					@task-updated="taskupdated"

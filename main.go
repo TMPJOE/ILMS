@@ -19,12 +19,12 @@ var assets embed.FS
 
 func main() {
 
-	err := os.MkdirAll("Logs", 0755)
+	err := os.MkdirAll("logs", 0755)
 	if err != nil {
 		panic(err)
 	}
 
-	LOG_FILE, err := os.OpenFile("Logs/tasks.log", os.O_CREATE|os.O_APPEND|os.O_RDONLY, 0666)
+	LOG_FILE, err := os.OpenFile("logs/tasks.log", os.O_CREATE|os.O_APPEND|os.O_RDONLY, 0666)
 	if err != nil {
 		panic(err)
 	}
