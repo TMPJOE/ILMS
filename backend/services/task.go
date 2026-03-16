@@ -34,9 +34,14 @@ func (s *TaskService) AddTask(input models.TaskInput) (models.TaskOutput, error)
 	return *result, nil
 }
 
-func (s *TaskService) GetTasks() ([]models.TaskOutput, error) {
+func (s *TaskService) GetTasks(id int) (*models.TaskResponse, error) {
 
-	tasks, err := s.r.SelectAll()
+	var lastId int
+
+	if id < 0 {
+		id = 0
+	}
+	tasks, err := s.r.Select(id)
 	if err != nil {
 		s.l.Error("Something broke", "err", err)
 		return nil, err
@@ -48,9 +53,17 @@ func (s *TaskService) GetTasks() ([]models.TaskOutput, error) {
 	//iterate through slice of pointers to assign its value to the slice of task output
 	for _, task := range tasks {
 		tasksOut = append(tasksOut, *task)
+		lastId = task.Id
 	}
 
-	return tasksOut, nil
+	response := &models.TaskResponse{
+		Tasks:  tasksOut,
+		LastId: lastId,
+	}
+
+	s.l.Info("Showing all tasks")
+
+	return response, nil
 }
 
 func (s *TaskService) UpdateTask(update models.TaskUpdate) (models.TaskSwapBack, error) {

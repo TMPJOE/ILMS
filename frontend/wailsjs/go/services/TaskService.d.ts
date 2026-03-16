@@ -6,6 +6,6 @@ export function AddTask(arg1:models.TaskInput):Promise<models.TaskOutput>;
 
 export function DeleteTask(arg1:number):Promise<void>;
 
-export function GetTasks():Promise<Array<models.TaskOutput>>;
+export function GetTasks(arg1:number):Promise<models.TaskResponse>;
 
 export function UpdateTask(arg1:models.TaskUpdate):Promise<models.TaskSwapBack>;

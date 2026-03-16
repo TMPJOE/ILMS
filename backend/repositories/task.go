@@ -45,10 +45,12 @@ func (t *TaskRepo) Create(taskName, taskDesc string) (*models.TaskOutput, error)
 	return task, nil
 }
 
-func (t *TaskRepo) SelectAll() ([]*models.TaskOutput, error) {
-	query := "SELECT * FROM task"
+// TODO: implement pagination
+func (t *TaskRepo) Select(id int) ([]*models.TaskOutput, error) {
 
-	rows, err := t.db.Query(query)
+	query := "SELECT * FROM task WHERE (id) > (?) ORDER BY id, created_at LIMIT 11;"
+
+	rows, err := t.db.Query(query, id)
 	if err != nil {
 		return nil, err
 	}

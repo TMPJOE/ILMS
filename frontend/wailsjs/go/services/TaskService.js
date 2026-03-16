@@ -10,8 +10,8 @@ export function DeleteTask(arg1) {
   return window['go']['services']['TaskService']['DeleteTask'](arg1);
 }
 
-export function GetTasks() {
-  return window['go']['services']['TaskService']['GetTasks']();
+export function GetTasks(arg1) {
+  return window['go']['services']['TaskService']['GetTasks'](arg1);
 }
 
 export function UpdateTask(arg1) {

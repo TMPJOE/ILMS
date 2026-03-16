@@ -21,10 +21,26 @@ interface TaskUpdate {
 }
 
 var tasks = ref([] as Task[]);
+var lastId = 0;
+var hasMore: boolean;
+
+function managePage(way: boolean) {
+	if (way) {
+		lastId += 11;
+	}
+	lastId -= 11;
+	console.log(lastId);
+	fetchTasks();
+}
 
 function fetchTasks() {
-	GetTasks().then(result => {
-		tasks.value = result;
+	GetTasks(lastId - 1).then(result => {
+		tasks.value = result.Tasks;
+		hasMore = result.Tasks.length > 10;
+		if (hasMore) {
+			tasks.value.length = 10;
+		}
+		lastId = result.LastId;
 	});
 }
 
@@ -88,6 +104,10 @@ onMounted(() => {
 				/>
 			</div>
 		</div>
+	</div>
+	<div>
+		<button @click="managePage(false)" v-if="lastId >= 11"><</button>
+		<button @click="managePage(true)" v-if="hasMore">></button>
 	</div>
 </template>
 

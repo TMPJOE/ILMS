@@ -23,6 +23,11 @@ type TaskOutput struct {
 	Date   string `json:"date"`
 }
 
+type TaskResponse struct {
+	Tasks  []TaskOutput
+	LastId int
+}
+
 type TaskUpdate struct {
 	Id     int    `json:"id"`
 	Status int    `json:"status"`
