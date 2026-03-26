@@ -1,7 +1,10 @@
+// Package services contains all the service layer of the proyect
 package services
 
 import (
+	"errors"
 	"log/slog"
+	"strings"
 
 	"dev.acevedo/backend/models"
 	"dev.acevedo/backend/repositories"
@@ -19,24 +22,28 @@ func NewTaskService(l *slog.Logger, r *repositories.TaskRepo) *TaskService {
 	}
 }
 
-func (s *TaskService) AddTask(input models.TaskInput) (models.TaskOutput, error) {
-	result, err := s.r.Create(input.Name, input.Desc)
-	if err != nil {
-		s.l.Error("Something went wrong", "desc", err.Error())
-		return models.TaskOutput{}, err
+func (s *TaskService) AddTask(input models.TaskInput) (*models.TaskOutput, error) {
+	if strings.TrimSpace(input.Desc) != "" && strings.TrimSpace(input.Name) != "" {
+		result, err := s.r.Create(input.Name, input.Desc)
+		if err != nil {
+			s.l.Error("Something went wrong", "desc", err.Error())
+			return nil, err
+		}
+
+		s.l.Info(
+			"Task Added",
+			slog.String("Name", input.Name),
+		)
+
+		return result, nil
 	}
-
-	s.l.Info(
-		"Task Added",
-		slog.String("Name", input.Name),
-	)
-
-	return *result, nil
+	err := errors.New("invalid input")
+	s.l.Error("Opps...", "err", err.Error())
+	return nil, err
 }
 
 func (s *TaskService) GetTasks(id int) (*models.TaskResponse, error) {
-
-	var lastId int
+	var lastID int
 
 	if id < 0 {
 		id = 0
@@ -47,18 +54,18 @@ func (s *TaskService) GetTasks(id int) (*models.TaskResponse, error) {
 		return nil, err
 	}
 
-	//allocate memory for task output slice
+	// allocate memory for task output slice
 	tasksOut := make([]models.TaskOutput, 0, len(tasks))
 
-	//iterate through slice of pointers to assign its value to the slice of task output
+	// iterate through slice of pointers to assign its value to the slice of task output
 	for _, task := range tasks {
 		tasksOut = append(tasksOut, *task)
-		lastId = task.Id
+		lastID = task.Id
 	}
 
 	response := &models.TaskResponse{
 		Tasks:  tasksOut,
-		LastId: lastId,
+		LastId: lastID,
 	}
 
 	s.l.Info("Showing all tasks")
@@ -66,18 +73,16 @@ func (s *TaskService) GetTasks(id int) (*models.TaskResponse, error) {
 	return response, nil
 }
 
-func (s *TaskService) UpdateTask(update models.TaskUpdate) (models.TaskSwapBack, error) {
+func (s *TaskService) UpdateTask(update models.TaskUpdate) (*models.TaskSwapBack, error) {
 	task, err := s.r.Update(update)
 	if err != nil {
 		s.l.Error("Update error caused by", "err", err)
-		return models.TaskSwapBack{}, err
+		return nil, err
 	}
 
 	s.l.Info("Task updated")
 
-	taskOut := *task
-
-	return taskOut, err
+	return task, err
 }
 
 func (s *TaskService) DeleteTask(id int) error {
