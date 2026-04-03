@@ -45,10 +45,8 @@ func (t *TaskRepo) Create(taskName, taskDesc string) (*models.TaskOutput, error)
 	return task, nil
 }
 
-// TODO: implement pagination
 func (t *TaskRepo) Select(id int) ([]*models.TaskOutput, error) {
-
-	query := "SELECT * FROM task WHERE (id) > (?) ORDER BY id, created_at LIMIT 11;"
+	query := "SELECT * FROM task WHERE (id) > (?) ORDER BY id, created_at DESC LIMIT 11;"
 
 	rows, err := t.db.Query(query, id)
 	if err != nil {
@@ -68,7 +66,6 @@ func (t *TaskRepo) Select(id int) ([]*models.TaskOutput, error) {
 			&t.Desc,
 			&t.Date,
 		)
-
 		if err != nil {
 			return nil, err
 		}
@@ -81,7 +78,6 @@ func (t *TaskRepo) Select(id int) ([]*models.TaskOutput, error) {
 	}
 
 	return tasks, nil
-
 }
 
 func (t *TaskRepo) Update(task models.TaskUpdate) (*models.TaskSwapBack, error) {

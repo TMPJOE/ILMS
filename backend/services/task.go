@@ -58,9 +58,11 @@ func (s *TaskService) GetTasks(id int) (*models.TaskResponse, error) {
 	tasksOut := make([]models.TaskOutput, 0, len(tasks))
 
 	// iterate through slice of pointers to assign its value to the slice of task output
-	for _, task := range tasks {
+	for i, task := range tasks {
 		tasksOut = append(tasksOut, *task)
-		lastID = task.Id
+		if i+1 == len(tasks)-1 {
+			lastID = task.Id
+		}
 	}
 
 	response := &models.TaskResponse{

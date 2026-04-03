@@ -24,8 +24,9 @@ type TaskOutput struct {
 }
 
 type TaskResponse struct {
-	Tasks  []TaskOutput
-	LastId int
+	Tasks     []TaskOutput
+	LastId    int
+	FirstPage bool
 }
 
 type TaskUpdate struct {

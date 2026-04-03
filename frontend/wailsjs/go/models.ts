@@ -37,6 +37,7 @@ export namespace models {
 	export class TaskResponse {
 	    Tasks: TaskOutput[];
 	    LastId: number;
+	    FirstPage: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new TaskResponse(source);
@@ -46,6 +47,7 @@ export namespace models {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.Tasks = this.convertValues(source["Tasks"], TaskOutput);
 	        this.LastId = source["LastId"];
+	        this.FirstPage = source["FirstPage"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
