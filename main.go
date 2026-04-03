@@ -3,7 +3,10 @@ package main
 import (
 	"embed"
 	"os"
+	"path/filepath"
+	"strings"
 
+	"dev.acevedo/backend"
 	"dev.acevedo/backend/log"
 	"dev.acevedo/backend/repositories"
 	"dev.acevedo/backend/services"
@@ -18,26 +21,55 @@ import (
 var assets embed.FS
 
 func main() {
+	// Get the directory where the binary is located
+	execPath, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	execDir := filepath.Dir(execPath)
 
-	err := os.MkdirAll("logs", 0755)
+	// Use current working directory if we're in dev mode (binary is in a temp location)
+	// Check if execDir contains "wails" or is a temp directory
+	cwd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	
+	// If running from Wails dev mode, use the current working directory instead
+	if !filepath.IsAbs(execDir) || strings.Contains(execDir, "wails") || strings.Contains(execDir, "tmp") {
+		execDir = cwd
+	}
+
+	// Create directories relative to the determined directory
+	logsDir := filepath.Join(execDir, "logs")
+	dbDir := filepath.Join(execDir, "database")
+
+	err = os.MkdirAll(logsDir, 0755)
 	if err != nil {
 		panic(err)
 	}
 
-	LOG_FILE, err := os.OpenFile("logs/tasks.log", os.O_CREATE|os.O_APPEND|os.O_RDONLY, 0666)
+	err = os.MkdirAll(dbDir, 0755)
 	if err != nil {
 		panic(err)
 	}
 
-	defer LOG_FILE.Close()
+	logFile, err := os.OpenFile(filepath.Join(logsDir, "tasks.log"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
+	if err != nil {
+		panic(err)
+	}
+
+	defer logFile.Close()
 
 	//logger init
-	log := log.New(LOG_FILE)
+	log := log.New(logFile)
 
 	//database connection
-	dbPool, err := database.OpenDb()
+	dbPath := filepath.Join(dbDir, "tasks.db")
+	dbPool, err := database.OpenDb(backend.DbFiles, log, dbPath)
 	if err != nil {
-		log.Error("Database connection failed with ", "err", err.Error())
+		log.Error("Database connection failed", "error", err.Error())
+		panic(err)
 	}
 	defer dbPool.Close()
 

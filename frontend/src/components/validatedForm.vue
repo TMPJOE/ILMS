@@ -52,6 +52,10 @@ async function onSubmit(values: any) {
     }
   } else {
     try {
+      await AddTask({
+        name: values.name,
+        desc: values.desc,
+      });
       emit("task-added");
     } catch (error) {
       console.error("Error adding task:", error);

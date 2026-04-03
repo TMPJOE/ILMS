@@ -21,13 +21,13 @@ interface TaskUpdate {
 }
 
 var tasks = ref([] as Task[]);
-var indexes = new Array();
-var hasMore: boolean;
+var indexes = ref([0] as number[]);
+var hasMore = ref(false);
 
 async function managePage(way: boolean) {
   if (way == false) {
-    indexes.pop()
-    indexes.pop()
+    indexes.value.pop()
+    indexes.value.pop()
     await fetchTasks();
   } else {
     await fetchTasks();
@@ -35,19 +35,36 @@ async function managePage(way: boolean) {
 }
 
 async function fetchTasks() {
-  // Get the last ID in the stack, or 0 if empty
-  const currentCursor = indexes.at(-1) ?? 0;
+  try {
+    // Get the last ID in the stack, or 0 if empty
+    const currentCursor = indexes.value.at(-1) ?? 0;
 
-  const result = await GetTasks(currentCursor);
+    const result = await GetTasks(currentCursor);
 
-  tasks.value = result.Tasks;
-  hasMore = result.Tasks.length > 10;
+    if (!result || !result.Tasks) {
+      console.error("Invalid response from GetTasks:", result);
+      tasks.value = [];
+      hasMore.value = false;
+      return;
+    }
 
-  if (hasMore) {
-    tasks.value.length = 10;
+    tasks.value = result.Tasks;
+    hasMore.value = result.Tasks.length > 10;
+
+    if (hasMore.value) {
+      tasks.value.length = 10;
+    }
+
+    if (result.Tasks.length > 0) {
+      indexes.value.push(result.LastId);
+    }
+
+    console.log("Fetched tasks:", tasks.value.length, "hasMore:", hasMore.value, "lastId:", result.LastId, "indexes length", indexes.value.length);
+  } catch (error) {
+    console.error("Failed to fetch tasks:", error);
+    tasks.value = [];
+    hasMore.value = false;
   }
-
-  indexes.push(result.LastId);
 }
 
 const selectedTask = ref<TaskUpdate | undefined>(undefined);
@@ -66,9 +83,8 @@ function closeForm() {
 }
 
 function taskAction() {
-  indexes.pop();
+  indexes.value.pop();
   fetchTasks();
-  console.log("we are fine, you suck")
 }
 
 function taskupdated(updatedTask: TaskUpdate) {
